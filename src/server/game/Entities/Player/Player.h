@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -30,7 +30,6 @@
 #include "PetDefines.h"
 #include "PlayerTaxi.h"
 #include "QuestDef.h"
-#include "Transmogrification.h"
 #include <queue>
 
 struct AccessRequirement;
@@ -147,18 +146,6 @@ struct SpellModifier
     uint32 spellId;
     Aura* const ownerAura;
 };
-
-typedef std::unordered_map<ObjectGuid, uint32> TransmogMapType;
-
-#ifdef PRESETS
-typedef std::map<uint8, uint32> PresetslotMapType;
-struct PresetData
-{
-    std::string name;
-    PresetslotMapType slotMap; // slotMap[slotId] = entry
-};
-typedef std::map<uint8, PresetData> PresetMapType;
-#endif
 
 typedef std::unordered_map<uint32, PlayerTalent*> PlayerTalentMap;
 typedef std::unordered_map<uint32, PlayerSpell*> PlayerSpellMap;
@@ -985,7 +972,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool GetCommandStatus(uint32 command) const { return (_activeCheats & command) != 0; }
         void SetCommandStatusOn(uint32 command) { _activeCheats |= command; }
         void SetCommandStatusOff(uint32 command) { _activeCheats &= ~command; }
-		
 
         // Played Time Stuff
         time_t m_logintime;
@@ -1593,7 +1579,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void UpdateRating(CombatRating cr);
         void UpdateAllRatings();
 
-        void CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, bool addTotalPct, float& minDamage, float& maxDamage) const override;
+        void CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, bool addTotalPct, float& minDamage, float& maxDamage, uint8 damageIndex) const override;
 
         void UpdateDefenseBonusesMod();
         void RecalculateRating(CombatRating cr) { ApplyRatingMod(cr, 0, true);}
@@ -1607,6 +1593,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         float GetRatingBonusValue(CombatRating cr) const;
         uint32 GetBaseSpellPowerBonus() const { return m_baseSpellPower; }
         int32 GetSpellPenetrationItemMod() const { return m_spellPenetrationItemMod; }
+
+        bool CanApplyResilience() const override { return true; }
 
         float GetExpertiseDodgeOrParryReduction(WeaponAttackType attType) const;
         void UpdateBlockPercentage();
@@ -1661,6 +1649,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool UpdatePosition(float x, float y, float z, float orientation, bool teleport = false) override;
         bool UpdatePosition(Position const& pos, bool teleport = false) override { return UpdatePosition(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation(), teleport); }
         void ProcessTerrainStatusUpdate(ZLiquidStatus status, Optional<LiquidData> const& liquidData) override;
+        void AtExitCombat() override;
 
         void SendMessageToSet(WorldPacket const* data, bool self) override { SendMessageToSetInRange(data, GetVisibilityRange(), self); }
         void SendMessageToSetInRange(WorldPacket const* data, float dist, bool self) override;
@@ -1820,6 +1809,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void _RemoveAllStatBonuses();
 
         void ResetAllPowers();
+
+        SpellSchoolMask GetMeleeDamageSchoolMask(WeaponAttackType attackType = BASE_ATTACK, uint8 damageIndex = 0) const override;
 
         void CastAllObtainSpells();
         void ApplyItemObtainSpells(Item* item, bool apply);
@@ -2145,16 +2136,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         bool CanFly() const override { return m_movementInfo.HasMovementFlag(MOVEMENTFLAG_CAN_FLY); }
 
-        //! Return collision height sent to client
-        float GetCollisionHeight(bool mounted) const;
-
         std::string GetMapAreaAndZoneString() const;
         std::string GetCoordsMapAreaAndZoneString() const;
-
-        TransmogMapType transmogMap; // transmogMap[iGUID] = entry
-#ifdef PRESETS
-        PresetMapType presetMap; // presetMap[presetId] = presetData
-#endif
 
     protected:
         // Gamemaster whisper whitelist

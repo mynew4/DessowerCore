@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -118,7 +118,11 @@ public:
         std::string uptime          = secsToTimeString(GameTime::GetUptime());
         uint32 updateTime           = sWorldUpdateTime.GetLastUpdateTime();
 
-		handler->PSendSysMessage("Добро пожаловать на сервер");
+        handler->SendSysMessage(GitRevision::GetFullVersion());
+        handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
+        handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
+        handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
+        handler->PSendSysMessage(LANG_UPDATE_DIFF, updateTime);
         // Can't use sWorld->ShutdownMsg here in case of console command
         if (sWorld->IsShuttingDown())
             handler->PSendSysMessage(LANG_SHUTDOWN_TIMELEFT, secsToTimeString(sWorld->GetShutDownTimeLeft()).c_str());

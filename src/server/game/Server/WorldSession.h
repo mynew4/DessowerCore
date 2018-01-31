@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -307,9 +307,6 @@ class TC_GAME_API WorldSession
         std::string const& GetPlayerName() const;
         std::string GetPlayerInfo() const;
 
-        uint32 GetCurrentVendor() const { return m_currentVendorEntry; }
-        void SetCurrentVendor(uint32 vendorEntry) { m_currentVendorEntry = vendorEntry; }
-
         ObjectGuid::LowType GetGUIDLow() const;
         void SetSecurity(AccountTypes security) { _security = security; }
         std::string const& GetRemoteAddress() const { return m_Address; }
@@ -349,7 +346,7 @@ class TC_GAME_API WorldSession
 
         void SendTrainerList(ObjectGuid guid);
         void SendTrainerList(ObjectGuid guid, std::string const& strTitle);
-        void SendListInventory(ObjectGuid guid, uint32 vendorEntry = 0);
+        void SendListInventory(ObjectGuid guid);
         void SendShowBank(ObjectGuid guid);
         bool CanOpenMailBox(ObjectGuid guid);
         void SendShowMailBox(ObjectGuid guid);
@@ -435,19 +432,11 @@ class TC_GAME_API WorldSession
         void SetLatency(uint32 latency) { m_latency = latency; }
         void ResetClientTimeDelay() { m_clientTimeDelay = 0; }
 
-        std::atomic<int32> m_timeOutTime;
-
-        void UpdateTimeOutTime(uint32 diff)
-        {
-            m_timeOutTime -= int32(diff);
-        }
+        std::atomic<time_t> m_timeOutTime;
 
         void ResetTimeOutTime(bool onlyActive);
 
-        bool IsConnectionIdle() const
-        {
-            return m_timeOutTime <= 0 && !m_inQueue;
-        }
+        bool IsConnectionIdle() const;
 
         // Recruit-A-Friend Handling
         uint32 GetRecruiterId() const { return recruiterId; }
@@ -1080,7 +1069,6 @@ class TC_GAME_API WorldSession
         rbac::RBACData* _RBACData;
         uint32 expireTime;
         bool forceExit;
-        uint32 m_currentVendorEntry;
         ObjectGuid m_currentBankerGUID;
 
         WorldSession(WorldSession const& right) = delete;

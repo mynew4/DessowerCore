@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,7 +28,6 @@
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Opcodes.h"
-#include "Transmogrification.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "Spell.h"
@@ -410,7 +409,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
     Spell* spell = new Spell(caster, spellInfo, TRIGGERED_NONE, ObjectGuid::Empty, false);
     spell->m_cast_count = castCount;                       // set count of casts
-    spell->prepare(&targets);
+    spell->prepare(targets);
 }
 
 void WorldSession::HandleCancelCastOpcode(WorldPacket& recvPacket)
@@ -563,12 +562,9 @@ void WorldSession::HandleSelfResOpcode(WorldPacket & /*recvData*/)
     if (_player->HasAuraType(SPELL_AURA_PREVENT_RESURRECTION))
         return; // silent return, client should display error by itself and not send this opcode
 
-    if (_player->GetUInt32Value(PLAYER_SELF_RES_SPELL))
+    if (uint32 spellId = _player->GetUInt32Value(PLAYER_SELF_RES_SPELL))
     {
-        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(_player->GetUInt32Value(PLAYER_SELF_RES_SPELL));
-        if (spellInfo)
-            _player->CastSpell(_player, spellInfo, false, nullptr);
-
+        _player->CastSpell(_player, spellId);
         _player->SetUInt32Value(PLAYER_SELF_RES_SPELL, 0);
     }
 }
@@ -651,12 +647,7 @@ void WorldSession::HandleMirrorImageDataRequest(WorldPacket& recvData)
             else if (*itr == EQUIPMENT_SLOT_BACK && player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK))
                 data << uint32(0);
             else if (Item const* item = player->GetItemByPos(INVENTORY_SLOT_BAG_0, *itr))
-            {
-                if (uint32 entry = sTransmogrification->GetFakeEntry(item))
-                    data << uint32(sObjectMgr->GetItemTemplate(entry)->DisplayInfoID);
-                else
-                    data << uint32(item->GetTemplate()->DisplayInfoID);
-            }
+                data << uint32(item->GetTemplate()->DisplayInfoID);
             else
                 data << uint32(0);
         }

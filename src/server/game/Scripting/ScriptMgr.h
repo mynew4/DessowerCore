@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -453,7 +453,7 @@ class TC_GAME_API OnlyOnceAreaTriggerScript : public AreaTriggerScript
     using AreaTriggerScript::AreaTriggerScript;
 
     public:
-        bool OnTrigger(Player* /*player*/, AreaTriggerEntry const* /*trigger*/) override;
+        bool OnTrigger(Player* /*player*/, AreaTriggerEntry const* /*trigger*/) final override;
 
     protected:
         virtual bool _OnTrigger(Player* /*player*/, AreaTriggerEntry const* /*trigger*/) = 0;

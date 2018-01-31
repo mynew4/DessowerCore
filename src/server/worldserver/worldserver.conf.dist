@@ -419,17 +419,6 @@ DetectPosCollision = 1
 CheckGameObjectLoS = 1
 
 #
-#    TargetPosRecalculateRange
-#        Description: Max distance from movement target point (+moving unit size) and targeted
-#                     object (+size) after that new target movement point calculated.
-#        Range:       0.5-5.0
-#        Default:     1.5
-#                     0.5 - (Minimum, Contact Range, More sensitive reaction to target movement)
-#                     5.0 - (Maximum, Melee attack range, Less CPU usage)
-
-TargetPosRecalculateRange = 1.5
-
-#
 #    UpdateUptimeInterval
 #        Description: Update realm uptime period (in minutes).
 #        Default:     10 - (10 minutes)
@@ -1103,6 +1092,34 @@ MaxGroupXPDistance = 74
 #        Default:     100
 
 MaxRecruitAFriendBonusDistance = 100
+
+#
+#    MinQuestScaledXPRatio
+#        Description: Min ratio of experience that a quest can grant when player level scaling is factored.
+#        Example:     50 (No less than 50% experience granted from a lower leveled quests completion)
+#                     100 (Quests always grant full experience upon completion)
+#        Default:     0 - (Quests too low may grant no experience)
+
+MinQuestScaledXPRatio = 0
+
+#
+#    MinCreatureScaledXPRatio
+#        Description: Min ratio of experience that a creature kill can grant when player level scaling is factored.  This 
+#                     will also allow spell procs to trigger, such as Drain Soul, if > 0 and exp is grantable.
+#        Example:     50 (No less than 50% experience granted from a lower leveled creature kill)
+#                     100 (Creature kills always grant full experience upon kill)
+#        Default:     0 - (Creatures too low may grant no experience)
+
+MinCreatureScaledXPRatio = 0
+
+#
+#    MinDiscoveredScaledXPRatio
+#        Description: Min ratio of experience that an area discovery event will grant when player level scaling is factored.
+#        Example:     50 (No less than 50% experience granted from discovering a new section of map)
+#                     100 (Map exploration always grant full experience upon discovery)
+#        Default:     0 - (No experience granted when discovered area is too low level)
+
+MinDiscoveredScaledXPRatio = 0
 
 #
 #    MailDeliveryDelay
@@ -3929,212 +3946,6 @@ PacketSpoof.BanDuration = 86400
 ###################################################################################################
 
 ###################################################################################################
-#    Transmogrification config
-###################################################################################################
-#
-#    SETTINGS
-#
-#    Logger.custom.transmog
-#        Description: Transmogrification logging setting, see logger settings
-#        Default:    3, Console Server
-#
-#    Transmogrification.EnableTransmogInfo
-#        Description: Enables / Disables the info button for transmogrification
-#        Default:    1
-#
-#    Transmogrification.TransmogNpcText
-#        Description: The npc_text entry of the info menu for transmogrification
-#        Default:    65000
-#
-#    Transmogrification.Allowed
-#        Description: A list of item entries that are allowed for transmogrification (skips quality and CanUseItem check)
-#                     Example: "25 35674 5623"
-#        Default:    ""
-#
-#    Transmogrification.NotAllowed
-#        Description: A list of item entries that are NOT allowed for transmogrification
-#                     Example: "25 35674 5623"
-#        Default:    ""
-
-Logger.custom.transmog = 3, Console Server
-
-Transmogrification.EnableTransmogInfo = 1
-Transmogrification.TransmogNpcText = 65000
-
-Transmogrification.Allowed = ""
-Transmogrification.NotAllowed = ""
-
-#
-#    COPPER COST
-#
-#    Transmogrification.ScaledCostModifier
-#        Description: A multiplier for the default gold cost (change to 0 for no default cost)
-#        Default:    1.0
-#
-#    Transmogrification.CopperCost
-#        Description: Cost added on top of other costs (can be negative)
-#        Default:    0
-#
-#    For custom gold cost set ScaledCostModifier to 0.0 and CopperCost to what ever cost you want
-
-Transmogrification.ScaledCostModifier = 1.0
-Transmogrification.CopperCost = 0
-
-#
-#    TOKEN COST
-#
-#    Transmogrification.RequireToken
-#        Description: Adds/disables token cost
-#        Default:    0
-#
-#    Transmogrification.TokenEntry
-#        Description: Entry of the token item
-#        Default:    49426
-#
-#    Transmogrification.TokenAmount
-#        Description: Amount of tokens required
-#        Default:    1
-
-Transmogrification.RequireToken = 0
-Transmogrification.TokenEntry = 49426
-Transmogrification.TokenAmount = 1
-
-#
-#    REQUIREMENTS
-#
-#    Transmogrification.AllowPoor
-#        Description: Allow poor quality items to be used as source and target items
-#        Default:    0
-#
-#    Transmogrification.AllowCommon
-#        Description: Allow common quality items to be used as source and target items
-#        Default:    0
-#
-#    Transmogrification.AllowUncommon
-#        Description: Allow uncommon quality items to be used as source and target items
-#        Default:    1
-#
-#    Transmogrification.AllowRare
-#        Description: Allow rare quality items to be used as source and target items
-#        Default:    1
-#
-#    Transmogrification.AllowEpic
-#        Description: Allow epic quality items to be used as source and target items
-#        Default:    1
-#
-#    Transmogrification.AllowLegendary
-#        Description: Allow legendary quality items to be used as source and target items
-#        Default:    0
-#
-#    Transmogrification.AllowArtifact
-#        Description: Allow artifact quality items to be used as source and target items
-#        Default:    0
-#
-#    Transmogrification.AllowHeirloom
-#        Description: Allow heirloom quality items to be used as source and target items
-#        Default:    1
-#
-#    Transmogrification.AllowMixedArmorTypes
-#        Description: Allow cloth items to be transmogrified with plate for example
-#        Default:    0
-#
-#    Transmogrification.AllowMixedWeaponTypes
-#        Description: Allow axe to be transmogrified with dagger for example
-#        Default:    0
-#
-#    Transmogrification.AllowFishingPoles
-#        Description: Allow fishing poles to be transmogrified
-#        Default:    0
-#
-#    Transmogrification.IgnoreReqRace
-#        Description: Ignore required race for source items
-#        Default:    0
-#
-#    Transmogrification.IgnoreReqClass
-#        Description: Ignore required class for source items
-#        Default:    0
-#
-#    Transmogrification.IgnoreReqSkill
-#        Description: Ignore required skill for source items
-#        Default:    0
-#
-#    Transmogrification.IgnoreReqSpell
-#        Description: Ignore required spell for source items
-#        Default:    0
-#
-#    Transmogrification.IgnoreReqLevel
-#        Description: Ignore required level for source items
-#        Default:    0
-#
-#    Transmogrification.IgnoreReqEvent
-#        Description: Ignore required event for source items
-#        Default:    0
-#
-#    Transmogrification.IgnoreReqStats
-#        Description: Ignore stat count > 0 requirement for source items
-#        Default:    0
-
-Transmogrification.AllowPoor = 0
-Transmogrification.AllowCommon = 0
-Transmogrification.AllowUncommon = 1
-Transmogrification.AllowRare = 1
-Transmogrification.AllowEpic = 1
-Transmogrification.AllowLegendary = 0
-Transmogrification.AllowArtifact = 0
-Transmogrification.AllowHeirloom = 1
-
-Transmogrification.AllowMixedArmorTypes = 0
-Transmogrification.AllowMixedWeaponTypes = 0
-Transmogrification.AllowFishingPoles = 0
-
-Transmogrification.IgnoreReqRace = 0
-Transmogrification.IgnoreReqClass = 0
-Transmogrification.IgnoreReqSkill = 0
-Transmogrification.IgnoreReqSpell = 0
-Transmogrification.IgnoreReqLevel = 0
-Transmogrification.IgnoreReqEvent = 0
-Transmogrification.IgnoreReqStats = 0
-
-#
-#    SET FEATURE
-#
-#    Transmogrification.EnableSets
-#        Description: Enables / Disables the set feature. If you want permanent disable, check Transmogrification.h
-#        Default:    1
-#
-#    Transmogrification.MaxSets
-#        Description: Maximum amount of sets a player can save (hardcap at 25)
-#        Default:    10
-#
-#    Transmogrification.EnableSetInfo
-#        Description: Enables / Disables the info button for set fature
-#        Default:    1
-#
-#    Transmogrification.SetNpcText
-#        Description: The npc_text entry of the info menu for the set feature
-#        Default:    65001
-#
-#    Transmogrification.SetCostModifier
-#        Description: A multiplier for the default gold cost (all costs summed together) (change to 0 for no default cost)
-#        Default:    3.0
-#
-#    Transmogrification.SetCopperCost
-#        Description: Cost added on top of other costs (can be negative)
-#        Default:    0
-
-Transmogrification.EnableSets = 1
-Transmogrification.MaxSets = 10
-
-Transmogrification.EnableSetInfo = 1
-Transmogrification.SetNpcText = 65001
-
-Transmogrification.SetCostModifier = 3.0
-Transmogrification.SetCopperCost = 0
-
-#
-###################################################################################################
-
-###################################################################################################
 # METRIC SETTINGS
 #
 # These settings control the statistics sent to the metric database (currently InfluxDB)
@@ -4172,13 +3983,3 @@ Metric.OverallStatusInterval = 1
 
 #
 ###################################################################################################
-
-#  
-# Includes satellite to search for work elsewhere LFG 
-# Default: 0 - Disable  
-# 1 - Enable  
- 
-LFG.Location.All = 0 
- 
-# 
-################################################################################################### 
