@@ -80,8 +80,13 @@ char const* GitRevision::GetFullDatabase()
 
 char const* GitRevision::GetFullVersion()
 {
-  return "TrinityCore rev. " VER_PRODUCTVERSION_STR
+	return "Dess Core rev. " VER_PRODUCTVERSION_STR
     " (" TRINITY_PLATFORM_STR ", " _BUILD_DIRECTIVE ", " TRINITY_LINKAGE_TYPE_STR ")";
+}
+
+char const* GitRevision::GetFullVersionDess()
+{
+	return _HASH " " _DATE;
 }
 
 char const* GitRevision::GetCompanyNameStr()

@@ -117,12 +117,23 @@ public:
         uint32 maxQueuedClientsNum  = sWorld->GetMaxQueuedSessionCount();
         std::string uptime          = secsToTimeString(GameTime::GetUptime());
         uint32 updateTime           = sWorldUpdateTime.GetLastUpdateTime();
+		
+		// Dess Info
+		Player* player 				= handler->GetSession()->GetPlayer();
+		uint32 latency     	 		= player->GetSession()->GetLatency();
+		uint32 realmID 				= sConfigMgr->GetIntDefault("RealmID", 0);
+		
+		QueryResult result = LoginDatabase.PQuery("SELECT name FROM realmlist WHERE id = '%u'", realmID);
+		std::string Realmname = result->Fetch()->GetString();
+		
+		handler->PSendSysMessage("|cFFFF0000#|cff6C8CD5 Информация о мире: |cff14ECCF%s", Realmname.c_str());
+		handler->PSendSysMessage("|cFFFF0000#|cff6C8CD5 Ядро сервера: |cFFFF0000Dess Core rev.|r %s", GitRevision::GetFullVersionDess());
+		handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
+		handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
 
-        handler->SendSysMessage(GitRevision::GetFullVersion());
-        handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
-        handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
-        handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
-        handler->PSendSysMessage(LANG_UPDATE_DIFF, updateTime);
+        // handler->SendSysMessage(GitRevision::GetFullVersion());        
+        // handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);        
+        // handler->PSendSysMessage(LANG_UPDATE_DIFF, updateTime);
         // Can't use sWorld->ShutdownMsg here in case of console command
         if (sWorld->IsShuttingDown())
             handler->PSendSysMessage(LANG_SHUTDOWN_TIMELEFT, secsToTimeString(sWorld->GetShutDownTimeLeft()).c_str());
